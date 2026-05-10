@@ -18,3 +18,22 @@ const [elapsedTime, setElapsedTime] = useState(null);
 
 // listi af öllum sessions í dag
 const [sessions, setSessions] = useState<Session[]>([])
+
+
+useEffect(() => {
+  const saved = localStorage.getItem('clockSessions');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      setSessions(
+        parsed.map((s: any) => ({
+          ...s,
+          startTime: new Date(s.startTime),
+          endTime: s.endTime ? new Date(s.endTime) : null,
+        }))
+      );
+    } catch (e) {
+      console.error('Failed to load sessions', e);
+    }
+  }
+}, []);
