@@ -55,3 +55,30 @@ useEffect(() => {
 
   return () => clearInterval(interval);  
 }, [isClockedIn, currentSessionStart]);
+
+const handleClockIn = () => {
+  const now = new Date();
+  setCurrentSessionStart(now);
+  setIsClockedIn(true);
+  setElapsedTime(0);
+};
+
+const handleClockOut = () => {
+  if (currentSessionStart) {
+    const endTime = new Date();
+    const duration = endTime.getTime() - currentSessionStart.getTime();
+
+    const newSession: Session = {
+      id: Date.now().toString(),    // Einfalt ID, gæti verið betra að nota UUID í alvöru appi
+      startTime: currentSessionStart,
+      endTime: endTime,
+      duration: duration,
+    };
+
+    setSessions([...sessions, newSession]);  // bæta við lista
+    setIsClockedIn(false);                   // uppfæra stöðu
+    setCurrentSessionStart(null);            // eyða núverandi "session start" tímann
+    setElapsedTime(0);                       // endurstilla tímann
+  }
+};
+
